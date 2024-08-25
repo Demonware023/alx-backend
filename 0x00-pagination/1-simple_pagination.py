@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""
+implement the get_page method
+"""
 import csv
 from typing import List, Tuple
 
