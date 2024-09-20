@@ -1,50 +1,25 @@
 #!/usr/bin/env python3
-"""
-Flask app with Babel for internationalization and language selection.
-"""
+""" 3-app module """
+from typing import Union
+from flask import Flask, request
+from flask_babel import Babel
+from routes.routes_3 import app_routes
+from config import Config
 
-from flask import Flask, render_template, request
-from flask_babel import Babel, _
 
 app = Flask(__name__)
-
-
-class Config:
-    """
-    Configuration class for Flask-Babel.
-    """
-    LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE = 'en'
-    BABEL_DEFAULT_TIMEZONE = 'UTC'
-
+babel = Babel(app)
 
 app.config.from_object(Config)
-
-babel = Babel(app)
+app.register_blueprint(app_routes)
 
 
 @babel.localeselector
-def get_locale():
+def get_locale() -> Union[str, None]:
+    """ get locale
     """
-    Determines the best match with supported languages based on
-    the request's Accept-Language header.
-
-    Returns:
-        str: The best match language code.
-    """
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
-
-
-@app.route('/')
-def index() -> str:
-    """
-    Handles the index route and renders the index template.
-
-    Returns:
-        str: Rendered HTML template.
-    """
-    return render_template('3-index.html')
+    return request.accept_languages.best_match(Config.LANGUAGES)
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host="0.0.0.0", port="5000")
